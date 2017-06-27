@@ -16,7 +16,7 @@ function initMap(arg) {
       infoWindow.setPosition(myLatLng);
 
       myMap = new google.maps.Map(document.getElementById('googleMap'), {
-        zoom: 13,
+        zoom: 12,
         center: myLatLng
       });
 
@@ -44,7 +44,9 @@ function initMap(arg) {
 
   searchButton.addEventListener("click", function(e) {
     e.preventDefault();
-    console.log(queryInput.value);
+    myMap.setCenter(myLatLng);
+    myMap.setZoom(12);
+    console.log(myMap.getBounds());
     // initMap(queryInput.value);
 
 
@@ -54,18 +56,17 @@ function initMap(arg) {
       return;
     }
 
-    console.log(input);
-
     let request = {
       location: myLatLng,
-      radius:'2000',
-      types: [input]
+      radius:"500",
+      query: input
     };
 
     service = new google.maps.places.PlacesService(myMap);
-    service.nearbySearch(request, callback);
+    service.textSearch(request, callback);
 
     function callback(results, status) {
+      console.log(results);
       if(markers.length > 0) {
         markers.forEach(function(m) {
           // console.log(m);
@@ -86,7 +87,7 @@ function initMap(arg) {
           newPlace.classList.add("results-list-item");
           newPlace.innerHTML = place.name;
 
-          console.log("newPlace: ",newPlace);
+          // console.log("newPlace: ",newPlace);
 
           let newLat = place.geometry.location.lat();
           let newLng = place.geometry.location.lng();
@@ -115,7 +116,7 @@ function initMap(arg) {
           markers.push(newMarker);
 
         }
-        console.log(places);
+        // console.log(places);
       }
     }
 

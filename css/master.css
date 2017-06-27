@@ -18,7 +18,7 @@ h1 {
 
 #search-button {
   display: inline-block;
-  background-color: teal;
+  background-color: #9ee1ff;
   margin:0 auto;
   line-height:30px;
   border-radius: 5px;
@@ -38,23 +38,29 @@ h1 {
   left:10px;
   bottom:5px;
   z-index:2;
-  background-color: grey;
+  background-color: #c9c9c9;
   overflow-y: auto;
 }
 
 #results-list {
   width:100%;
   padding-left: 0px;
+  margin-top: 0px;
 }
 
 .results-list-item {
-  height:50px;
+  height:70px;
   list-style: none;
   width:100%;
   padding-left: 10px;
   word-wrap: normal;
   box-sizing: border-box;
   border-bottom: 1px solid black;
+  cursor: pointer;
+}
+
+.results-list-item:hover {
+  background-color: #9ee1ff;
 }
 
 #googleMap {
