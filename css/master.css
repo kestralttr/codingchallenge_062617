@@ -1,0 +1,40 @@
+
+
+h1 {
+  text-align: center;
+}
+
+#search-form {
+  width:100%;
+  text-align: center;
+}
+
+#query-input {
+  margin: 0 auto;
+  width:80%;
+  height:30px;
+  outline: none;
+}
+
+#search-button {
+  display: inline-block;
+  background-color: teal;
+  margin:0 auto;
+  line-height:30px;
+  border-radius: 5px;
+  width:15%;
+  max-width: 100px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+#googleMap {
+  position:absolute;
+  top:120px;
+  left:10px;
+  right:10px;
+  bottom:5px;
+  z-index:1;
+}
