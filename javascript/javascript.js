@@ -38,7 +38,9 @@ function initMap(arg) {
 
   let searchButton = document.getElementById("search-button");
   let queryInput = document.getElementById("query-input");
+  let resultsList = document.getElementById("results-list");
   let markers = [];
+  let places = [];
 
   searchButton.addEventListener("click", function(e) {
     e.preventDefault();
@@ -66,34 +68,48 @@ function initMap(arg) {
     function callback(results, status) {
       if(markers.length > 0) {
         markers.forEach(function(m) {
-          console.log(m);
+          // console.log(m);
           m.setMap(null);
         });
       }
       markers = [];
+      places = [];
+      resultsList.innerHTML = "";
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (let i = 0; i < results.length; i++) {
           let place = results[i];
-          // markers.push(place);
+          places.push(place);
           let lat = place.geometry.location.lat();
           let lng = place.geometry.location.lng();
 
-          markers.push(new google.maps.Marker({
+          let newPlace = document.createElement("li");
+          newPlace.classList.add("results-list-item");
+          newPlace.innerHTML = place.name;
+          newPlace.addEventListener("mouseenter", function(e) {
+            e.preventDefault();
+            markers[i].setAnimation(google.maps.Animation.BOUNCE);
+          });
+          newPlace.addEventListener("mouseleave", function(e) {
+            e.preventDefault();
+            markers[i].setAnimation(null);
+            console.log("stopping animation");
+          });
+
+          resultsList.appendChild(newPlace);
+
+          let newMarker = new google.maps.Marker({
             position: {lat,lng},
             map: myMap,
             title: place.name
-          }));
+          });
+          markers.push(newMarker);
 
         }
-        console.log(markers);
+        console.log(places);
       }
     }
 
 
   });
-
-}
-
-function updateMap() {
 
 }
