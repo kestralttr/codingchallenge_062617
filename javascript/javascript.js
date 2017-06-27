@@ -85,6 +85,12 @@ function initMap(arg) {
           let newPlace = document.createElement("li");
           newPlace.classList.add("results-list-item");
           newPlace.innerHTML = place.name;
+
+          console.log("newPlace: ",newPlace);
+
+          let newLat = place.geometry.location.lat();
+          let newLng = place.geometry.location.lng();
+
           newPlace.addEventListener("mouseenter", function(e) {
             e.preventDefault();
             markers[i].setAnimation(google.maps.Animation.BOUNCE);
@@ -92,7 +98,11 @@ function initMap(arg) {
           newPlace.addEventListener("mouseleave", function(e) {
             e.preventDefault();
             markers[i].setAnimation(null);
-            console.log("stopping animation");
+          });
+          newPlace.addEventListener("click", function(e) {
+            e.preventDefault();
+            myMap.setCenter({lat:newLat,lng:newLng});
+            myMap.setZoom(15);
           });
 
           resultsList.appendChild(newPlace);
