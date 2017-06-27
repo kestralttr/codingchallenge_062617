@@ -30,10 +30,21 @@ h1 {
   outline: none;
 }
 
+#results-container {
+  position:absolute;
+  top:120px;
+  right:70%;
+  border-right: 2px solid black;
+  left:10px;
+  bottom:5px;
+  z-index:2;
+  background-color: grey;
+}
+
 #googleMap {
   position:absolute;
   top:120px;
-  left:10px;
+  left:30%;
   right:10px;
   bottom:5px;
   z-index:1;
