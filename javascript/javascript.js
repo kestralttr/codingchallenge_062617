@@ -1,11 +1,8 @@
 function initMap(arg) {
 
-  let myLatLng = {lat: 41.850033, lng: -87.6500523};
+  let myLatLng;
+  let myMap;
 
-  let myMap = new google.maps.Map(document.getElementById('googleMap'), {
-    zoom: 12,
-    center: myLatLng
-  });
 
   let infoWindow = new google.maps.InfoWindow;
 
@@ -17,7 +14,12 @@ function initMap(arg) {
       };
 
       infoWindow.setPosition(myLatLng);
-      myMap.setCenter(myLatLng);
+
+      myMap = new google.maps.Map(document.getElementById('googleMap'), {
+        zoom: 12,
+        center: myLatLng
+      });
+
     }, function() {
       handleLocationError(true, infoWindow, myMap.getCenter());
     });
@@ -26,55 +28,63 @@ function initMap(arg) {
     handleLocationError(false, infoWindow, myMap.getCenter());
   }
 
-
-  let input;
-
-  if(arg === "") {
-    input = "resturant";
-  } else {
-    input = arg;
+  function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+                          'Error: The Geolocation service failed.' :
+                          'Error: Your browser doesn\'t support geolocation.');
+    infoWindow.open(myMap);
   }
 
-  console.log(input);
-
-  let request = {
-    location: myLatLng,
-    radius:'1000',
-    types: [input]
-  };
-
-  service = new google.maps.places.PlacesService(myMap);
-  service.nearbySearch(request, callback);
-
-  function callback(results, status) {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      for (let i = 0; i < results.length; i++) {
-        let place = results[i];
-        console.log(place.name);
-        let lat = place.geometry.location.lat();
-        let lng = place.geometry.location.lng();
-
-        new google.maps.Marker({
-          position: {lat,lng},
-          map: myMap,
-          title: place.name
-        });
-
-      }
-    }
-  }
-
-}
-
-(function() {
   let searchButton = document.getElementById("search-button");
   let queryInput = document.getElementById("query-input");
 
   searchButton.addEventListener("click", function(e) {
     e.preventDefault();
     console.log(queryInput.value);
-    initMap(queryInput.value);
+    // initMap(queryInput.value);
+
+
+    let input = queryInput.value;
+
+    if(input === "") {
+      return;
+    }
+
+    console.log(input);
+
+    let request = {
+      location: myLatLng,
+      radius:'1000',
+      types: [input]
+    };
+
+    service = new google.maps.places.PlacesService(myMap);
+    service.nearbySearch(request, callback);
+
+    function callback(results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (let i = 0; i < results.length; i++) {
+          let place = results[i];
+          console.log(place.name);
+          let lat = place.geometry.location.lat();
+          let lng = place.geometry.location.lng();
+
+          new google.maps.Marker({
+            position: {lat,lng},
+            map: myMap,
+            title: place.name
+          });
+
+        }
+      }
+    }
+
+
   });
 
+}
 
-})();
+function updateMap() {
+
+}
