@@ -3,9 +3,29 @@ function initMap(arg) {
   let myLatLng = {lat: 41.850033, lng: -87.6500523};
 
   let myMap = new google.maps.Map(document.getElementById('googleMap'), {
-    zoom: 15,
+    zoom: 12,
     center: myLatLng
   });
+
+  let infoWindow = new google.maps.InfoWindow;
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      myLatLng = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+
+      infoWindow.setPosition(myLatLng);
+      myMap.setCenter(myLatLng);
+    }, function() {
+      handleLocationError(true, infoWindow, myMap.getCenter());
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, myMap.getCenter());
+  }
+
 
   let input;
 
@@ -19,7 +39,7 @@ function initMap(arg) {
 
   let request = {
     location: myLatLng,
-    radius:'500',
+    radius:'1000',
     types: [input]
   };
 
