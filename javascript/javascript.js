@@ -1,4 +1,17 @@
 
+// initMap is the primary function used to build Google Maps object
+function initMap() {
+
+  let mapData = {
+    latLng: null,
+    map: null
+  };
+
+  setupMapWithCurrentPosition(mapData);
+
+  setupSearchFunctionality(mapData);
+}
+
 function setNewLatLng(newMapData, position) {
   return {
     lat: position.coords.latitude,
@@ -48,6 +61,54 @@ function removeMarkers(markers) {
   }
 }
 
+function assignEventListeners(idx,newPlace,placeData,mapData,newLat,newLng) {
+  newPlace.addEventListener("mouseenter", function(e) {
+    e.preventDefault();
+    placeData.markers[idx].setAnimation(google.maps.Animation.BOUNCE);
+  });
+  newPlace.addEventListener("mouseleave", function(e) {
+    e.preventDefault();
+    placeData.markers[idx].setAnimation(null);
+  });
+  newPlace.addEventListener("click", function(e) {
+    e.preventDefault();
+    mapData.map.setCenter({lat:newLat,lng:newLng});
+    mapData.map.setZoom(15);
+  });
+}
+
+function buildPlaceListItems(results,placeData,mapData,resultsList) {
+  for (let i = 0; i < results.length; i++) {
+    let place = results[i];
+    placeData.places.push(place);
+
+    let newPlace = document.createElement("li");
+    newPlace.classList.add("results-list-item");
+    newPlace.innerHTML = place.name;
+
+    let newLat = place.geometry.location.lat();
+    let newLng = place.geometry.location.lng();
+
+    assignEventListeners(i,newPlace,placeData,mapData,newLat,newLng);
+
+    resultsList.appendChild(newPlace);
+
+    let newMarker = new google.maps.Marker({
+      position: {lat:newLat,lng:newLng},
+      map: mapData.map,
+      title: place.name
+    });
+    placeData.markers.push(newMarker);
+
+  }
+}
+
+function getPlaceData(mapData,placeData,resultsList,results,status) {
+  if (status === google.maps.places.PlacesServiceStatus.OK) {
+    buildPlaceListItems(results,placeData,mapData,resultsList);
+  }
+}
+
 function setupPlaceList(mapData,placeData,request,resultsList) {
   let service = new google.maps.places.PlacesService(mapData.map);
   service.textSearch(request, callback);
@@ -58,47 +119,7 @@ function setupPlaceList(mapData,placeData,request,resultsList) {
     placeData.places = [];
     resultsList.innerHTML = "";
 
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      for (let i = 0; i < results.length; i++) {
-        let place = results[i];
-        placeData.places.push(place);
-        let lat = place.geometry.location.lat();
-        let lng = place.geometry.location.lng();
-
-        let newPlace = document.createElement("li");
-        newPlace.classList.add("results-list-item");
-        newPlace.innerHTML = place.name;
-
-        // console.log("newPlace: ",newPlace);
-
-        let newLat = place.geometry.location.lat();
-        let newLng = place.geometry.location.lng();
-
-        newPlace.addEventListener("mouseenter", function(e) {
-          e.preventDefault();
-          placeData.markers[i].setAnimation(google.maps.Animation.BOUNCE);
-        });
-        newPlace.addEventListener("mouseleave", function(e) {
-          e.preventDefault();
-          placeData.markers[i].setAnimation(null);
-        });
-        newPlace.addEventListener("click", function(e) {
-          e.preventDefault();
-          mapData.map.setCenter({lat:newLat,lng:newLng});
-          mapData.map.setZoom(15);
-        });
-
-        resultsList.appendChild(newPlace);
-
-        let newMarker = new google.maps.Marker({
-          position: {lat,lng},
-          map: mapData.map,
-          title: place.name
-        });
-        placeData.markers.push(newMarker);
-
-      }
-    }
+    getPlaceData(mapData,placeData,resultsList,results,status);
   }
 }
 
@@ -139,16 +160,4 @@ function setupSearchFunctionality(mapData) {
   };
 
   addSearchListener(searchButton,queryInput,mapData,placeData,resultsList);
-}
-
-function initMap() {
-
-  let mapData = {
-    latLng: null,
-    map: null
-  };
-
-  setupMapWithCurrentPosition(mapData);
-
-  setupSearchFunctionality(mapData);
 }
