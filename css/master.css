@@ -1,4 +1,7 @@
 
+html {
+  font-family: 'Ubuntu', sans-serif;
+}
 
 h1 {
   text-align: center;
@@ -11,7 +14,7 @@ h1 {
 
 #query-input {
   margin: 0 auto;
-  width:80%;
+  width:40%;
   height:30px;
   outline: none;
 }
@@ -19,6 +22,20 @@ h1 {
 #search-button {
   display: inline-block;
   background-color: #9ee1ff;
+  margin:0 auto;
+  line-height:30px;
+  border-radius: 5px;
+  width:15%;
+  max-width: 100px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+#reset-button {
+  display: inline-block;
+  background-color: #ffa99e;
   margin:0 auto;
   line-height:30px;
   border-radius: 5px;
