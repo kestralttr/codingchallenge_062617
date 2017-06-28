@@ -162,7 +162,7 @@ function initMap() {
   }
 
   // adds the event listener for the search button and prepares the request
-  function addSearchListener(searchButton,queryInput,resultsList) {
+  function addSearchListener(searchButton,queryInput,resultsList,googleMap,resultsContainer) {
     searchButton.addEventListener("click", function(e) {
       e.preventDefault();
       mapData.map.setCenter(mapData.latLng);
@@ -173,6 +173,15 @@ function initMap() {
       if(input === "") {
         return;
       }
+
+      if(resultsContainer.className === "results-container-transparent") {
+        resultsContainer.className = "results-container-opaque";
+      }
+
+      googleMap.className = "map-contracted";
+      setTimeout(function() {
+        google.maps.event.trigger(mapData.map, "resize");
+      },1000);
 
       let request = {
         location: mapData.latLng,
@@ -185,7 +194,7 @@ function initMap() {
     });
   }
 
-  function addResetListener(resetButton,resultsList,queryInput) {
+  function addResetListener(resetButton,resultsList,queryInput,googleMap,resultsContainer) {
     resetButton.addEventListener("click", function(e) {
       e.preventDefault();
       removeMarkers(placeData.markers);
@@ -193,17 +202,26 @@ function initMap() {
       mapData.map.setZoom(12);
       mapData.map.setCenter(mapData.latLng);
       queryInput.value = "";
+      googleMap.className = "map-expanded";
+      if(resultsContainer.className === "results-container-opaque") {
+        resultsContainer.className = "results-container-transparent";
+      }
+      setTimeout(function() {
+        google.maps.event.trigger(mapData.map, "resize");
+      },1000);
     });
   }
 
   // creates variables for DOM elements
   function setupSearchFunctionality() {
+    let resultsContainer = document.getElementById("results-container");
     let searchButton = document.getElementById("search-button");
     let resetButton = document.getElementById("reset-button");
     let queryInput = document.getElementById("query-input");
     let resultsList = document.getElementById("results-list");
+    let googleMap = document.getElementById("googleMap");
 
-    addSearchListener(searchButton,queryInput,resultsList);
-    addResetListener(resetButton,resultsList,queryInput);
+    addSearchListener(searchButton,queryInput,resultsList,googleMap,resultsContainer);
+    addResetListener(resetButton,resultsList,queryInput,googleMap,resultsContainer);
   }
 }
