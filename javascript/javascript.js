@@ -87,9 +87,14 @@ function initMap() {
     });
     checkbox.addEventListener("click", function(e) {
       e.stopPropagation();
-      e.preventDefault();
-      checkbox.checked = "true";
-      placeData.markers[idx].setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
+      // e.preventDefault();
+      if(this.checked === true) {
+        console.log(this.checked);
+        placeData.markers[idx].setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
+      } else {
+        console.log(this.checked);
+        placeData.markers[idx].setIcon("https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi.png");
+      }
     });
   }
 
