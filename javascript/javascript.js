@@ -12,13 +12,15 @@ function initMap() {
   setupSearchFunctionality(mapData);
 }
 
-function setNewLatLng(newMapData, position) {
+// returns an updated LatLng object based off of position
+function setNewLatLng(position) {
   return {
     lat: position.coords.latitude,
     lng: position.coords.longitude
   };
 }
 
+// uses a LatLng argument to instantiate a map and returns the map
 function setNewMap(latLng) {
   return new google.maps.Map(document.getElementById("googleMap"), {
     zoom: 12,
@@ -26,6 +28,7 @@ function setNewMap(latLng) {
   });
 }
 
+// gets current position of user and updates mapData with correct values
 function setupMapWithCurrentPosition(mapData) {
   let newMapData = {
     latLng: null,
@@ -36,7 +39,7 @@ function setupMapWithCurrentPosition(mapData) {
     navigator.geolocation.getCurrentPosition(function(position) {
 
       // save newly incoming map data after getting position
-      newMapData.latLng = setNewLatLng(newMapData, position);
+      newMapData.latLng = setNewLatLng(position);
       newMapData.map = setNewMap(newMapData.latLng);
 
       // assign new data to already declared map data
@@ -53,6 +56,7 @@ function setupMapWithCurrentPosition(mapData) {
 
 }
 
+// iterates through the markers array and removes each marker from the map
 function removeMarkers(markers) {
   if(markers.length > 0) {
     markers.forEach(function(m) {
@@ -61,6 +65,7 @@ function removeMarkers(markers) {
   }
 }
 
+// assigns mouseenter, mouseleave, and click event handlers on a newPlace list item
 function assignEventListeners(idx,newPlace,placeData,mapData,newLat,newLng) {
   newPlace.addEventListener("mouseenter", function(e) {
     e.preventDefault();
@@ -77,6 +82,17 @@ function assignEventListeners(idx,newPlace,placeData,mapData,newLat,newLng) {
   });
 }
 
+// adds a marker to the markers array based on place data
+function setMarker(newLat,newLng,mapData,place,placeData) {
+  let newMarker = new google.maps.Marker({
+    position: {lat:newLat,lng:newLng},
+    map: mapData.map,
+    title: place.name
+  });
+  placeData.markers.push(newMarker);
+}
+
+// iterates through results from Google Places, creating newPlaces and appending them to the DOM
 function buildPlaceListItems(results,placeData,mapData,resultsList) {
   for (let i = 0; i < results.length; i++) {
     let place = results[i];
@@ -93,22 +109,18 @@ function buildPlaceListItems(results,placeData,mapData,resultsList) {
 
     resultsList.appendChild(newPlace);
 
-    let newMarker = new google.maps.Marker({
-      position: {lat:newLat,lng:newLng},
-      map: mapData.map,
-      title: place.name
-    });
-    placeData.markers.push(newMarker);
-
+    setMarker(newLat,newLng,mapData,place,placeData);
   }
 }
 
+// confirms that OK status of the Google Places results and starts building them
 function getPlaceData(mapData,placeData,resultsList,results,status) {
   if (status === google.maps.places.PlacesServiceStatus.OK) {
     buildPlaceListItems(results,placeData,mapData,resultsList);
   }
 }
 
+// fires the textSearch request to Google Places and prepares to update places/markers
 function setupPlaceList(mapData,placeData,request,resultsList) {
   let service = new google.maps.places.PlacesService(mapData.map);
   service.textSearch(request, callback);
@@ -123,12 +135,12 @@ function setupPlaceList(mapData,placeData,request,resultsList) {
   }
 }
 
+// adds the event listener for the search button and prepares the request
 function addSearchListener(searchButton,queryInput,mapData,placeData,resultsList) {
   searchButton.addEventListener("click", function(e) {
     e.preventDefault();
     mapData.map.setCenter(mapData.latLng);
     mapData.map.setZoom(12);
-
 
     let input = queryInput.value;
 
@@ -147,12 +159,11 @@ function addSearchListener(searchButton,queryInput,mapData,placeData,resultsList
   });
 }
 
+// creates variables for DOM elements
 function setupSearchFunctionality(mapData) {
   let searchButton = document.getElementById("search-button");
   let queryInput = document.getElementById("query-input");
   let resultsList = document.getElementById("results-list");
-  let markers = [];
-  let places = [];
 
   let placeData = {
     markers: [],
