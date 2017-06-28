@@ -70,7 +70,7 @@ function initMap() {
   }
 
   // assigns mouseenter, mouseleave, and click event handlers on a newPlace list item
-  function assignEventListeners(idx,newPlace,newLat,newLng) {
+  function assignEventListeners(idx,newPlace,newLat,newLng,checkbox) {
     newPlace.addEventListener("mouseenter", function(e) {
       e.preventDefault();
       placeData.markers[idx].setAnimation(google.maps.Animation.BOUNCE);
@@ -81,8 +81,15 @@ function initMap() {
     });
     newPlace.addEventListener("click", function(e) {
       e.preventDefault();
+      e.stopPropagation();
       mapData.map.setCenter({lat:newLat,lng:newLng});
       mapData.map.setZoom(15);
+    });
+    checkbox.addEventListener("click", function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      checkbox.checked = "true";
+      placeData.markers[idx].setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
     });
   }
 
@@ -104,18 +111,22 @@ function initMap() {
       // console.log(place);
 
       let newPlace = document.createElement("li");
+      let checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.classList.add("checkbox");
       let newPlaceName = document.createElement("p");
       let newPlaceAddress = document.createElement("p");
       newPlace.classList.add("results-list-item");
       newPlaceName.innerHTML = place.name;
       newPlaceAddress.innerHTML = place.formatted_address;
+      newPlace.appendChild(checkbox);
       newPlace.appendChild(newPlaceName);
       newPlace.appendChild(newPlaceAddress);
 
       let newLat = place.geometry.location.lat();
       let newLng = place.geometry.location.lng();
 
-      assignEventListeners(i,newPlace,newLat,newLng);
+      assignEventListeners(i,newPlace,newLat,newLng,checkbox);
 
       resultsList.appendChild(newPlace);
 

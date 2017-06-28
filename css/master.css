@@ -66,9 +66,11 @@ h1 {
 }
 
 .results-list-item {
+  position: relative;
   list-style: none;
   width:100%;
   padding-left: 10px;
+  padding-right:15px;
   word-wrap: normal;
   box-sizing: border-box;
   border-bottom: 1px solid black;
@@ -77,6 +79,14 @@ h1 {
 
 .results-list-item:hover {
   background-color: #9ee1ff;
+}
+
+.checkbox {
+  position: absolute;
+  top:5px;
+  right:5px;
+  z-index:5;
+  cursor: pointer;
 }
 
 .results-list-item p {
