@@ -97,10 +97,16 @@ function buildPlaceListItems(results,placeData,mapData,resultsList) {
   for (let i = 0; i < results.length; i++) {
     let place = results[i];
     placeData.places.push(place);
+    // console.log(place);
 
     let newPlace = document.createElement("li");
+    let newPlaceName = document.createElement("p");
+    let newPlaceAddress = document.createElement("p");
     newPlace.classList.add("results-list-item");
-    newPlace.innerHTML = place.name;
+    newPlaceName.innerHTML = place.name;
+    newPlaceAddress.innerHTML = place.formatted_address;
+    newPlace.appendChild(newPlaceName);
+    newPlace.appendChild(newPlaceAddress);
 
     let newLat = place.geometry.location.lat();
     let newLng = place.geometry.location.lng();
